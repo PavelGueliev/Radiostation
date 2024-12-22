@@ -42,6 +42,7 @@ namespace Radiostation
 
                     // Загрузка авторов
                     var authors = new List<string>();
+                    authors.Add("");
                     string queryAuthors = "SELECT DISTINCT author FROM Track";
                     using (var cmd = new SqlCommand(queryAuthors, connection))
                     using (var reader = cmd.ExecuteReader())
@@ -59,6 +60,7 @@ namespace Radiostation
 
                     // Загрузка жанров
                     var genres = new List<ComboBoxItem>();
+                    genres.Add(new ComboBoxItem("", -1));
                     string queryGenres = "SELECT id, title FROM Genre";
                     using (var cmd = new SqlCommand(queryGenres, connection))
                     using (var reader = cmd.ExecuteReader())
@@ -76,6 +78,7 @@ namespace Radiostation
 
                     // Загрузка названий треков
                     var titles = new List<string>();
+                    titles.Add("");
                     string queryTitles = "SELECT title FROM Track";
                     using (var cmd = new SqlCommand(queryTitles, connection))
                     using (var reader = cmd.ExecuteReader())
@@ -136,7 +139,14 @@ namespace Radiostation
             dataGridViewOnlineEvents.Columns["TrackTitle"].HeaderText = "Трек";
             dataGridViewOnlineEvents.Columns["Genre"].HeaderText = "Жанр";
             dataGridViewOnlineEvents.Columns["Duration"].HeaderText = "Длительнотсь";
-
+            if (dataGridViewOnlineEvents.Columns["Author"] != null)
+                dataGridViewOnlineEvents.Columns["Author"].ReadOnly = true;
+            if (dataGridViewOnlineEvents.Columns["TrackTitle"] != null)
+                dataGridViewOnlineEvents.Columns["TrackTitle"].ReadOnly = true;
+            if (dataGridViewOnlineEvents.Columns["Genre"] != null)
+                dataGridViewOnlineEvents.Columns["Genre"].ReadOnly = true;
+            if (dataGridViewOnlineEvents.Columns["Duration"] != null)
+                dataGridViewOnlineEvents.Columns["Duration"].ReadOnly = true;
         }
 
         // Класс для хранения пары значение-текст в ComboBox
@@ -169,41 +179,35 @@ namespace Radiostation
         // Обработчик кнопки "Обновить базу событий"
         private void button1_Click(object sender, EventArgs e)
         {
-            string updateQuery = @"
-                WITH CTE_SortedTracks AS (
-                    SELECT 
-                        rp.КодПлейлиста,
-                        rp.ДатаВремя AS StartTime,
-                        t.id AS TrackID,
-                        t.duration,
-                        ROW_NUMBER() OVER (PARTITION BY rp.КодПлейлиста ORDER BY rp.ДатаВремя) AS RowNum
-                    FROM 
-                        Расписание_плейлистов rp
-                        JOIN Плейлист p ON p.КодПлейлиста = rp.КодПлейлиста
-                        JOIN Состав_Плейлиста sp ON sp.КодПлейлиста = p.КодПлейлиста
-                        JOIN Track t ON sp.КодТрека = t.id
-                )
-                INSERT INTO Online_event (КодТрека, ДатаВремя)
-                SELECT 
-                    st.TrackID,
-                    DATEADD(SECOND, DATEDIFF(SECOND, '00:00:00', st.duration) * (st.RowNum - 1), st.StartTime) AS EventTime
-                FROM 
-                    CTE_SortedTracks st;
-            ";
+            string storedProcedureName = "InsertOnlineEvents";
 
             using (var connection = new SqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    var cmd = new SqlCommand(updateQuery, connection);
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    MessageBox.Show($"База данных событий успешно обновлена. Добавлено записей: {rowsAffected}", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    using (var cmd = new SqlCommand(storedProcedureName, connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 0; // Без ограничения по времени
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    MessageBox.Show("База данных событий успешно обновлена.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ReFresh();
+                }
+                catch (SqlException sqlEx)
+                {
+                    // Обработка ошибок SQL
+                    MessageBox.Show($"SQL ошибка при обновлении базы данных: {sqlEx.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // Логирование sqlEx.Message при необходимости
                 }
                 catch (Exception ex)
                 {
+                    // Обработка других ошибок
                     MessageBox.Show($"Ошибка при обновлении базы данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // Логирование ex.Message при необходимости
                 }
             }
         }
@@ -228,13 +232,14 @@ namespace Radiostation
                         SELECT 
                             oe.КодСобытия,
                             t.title AS Трек,
+                            t.Duration AS Продолжительность,
                             t.author AS Автор,
-                            g.Название AS Жанр,
+                            g.Title AS Жанр,
                             oe.ДатаВремя AS [Дата воспроизведения]
                         FROM 
                             Online_event oe
                             JOIN Track t ON oe.КодТрека = t.id
-                            JOIN Жанр g ON t.genre = g.КодЖанра
+                            JOIN Genre g ON t.genre = g.id
                         WHERE 
                             1=1";
 
@@ -284,6 +289,7 @@ namespace Radiostation
                                 TrackTitle = reader["Трек"].ToString(),
                                 Author = reader["Автор"].ToString(),
                                 Genre = reader["Жанр"].ToString(),
+                                Duration = reader.GetTimeSpan(reader.GetOrdinal("Продолжительность")),
                                 EventTime = reader.GetDateTime(reader.GetOrdinal("Дата воспроизведения"))
                             });
                         }
@@ -392,7 +398,6 @@ namespace Radiostation
                             if (trackIdObj == null)
                             {
                                 MessageBox.Show("Не удалось найти трек с таким названием.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                ReFresh();
                                 return;
                             }
                             int trackId = Convert.ToInt32(trackIdObj);
@@ -408,7 +413,6 @@ namespace Radiostation
                             if (rowsAffected > 0)
                             {
                                 MessageBox.Show("Событие успешно обновлено.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                ReFresh();
                             }
                             else
                             {

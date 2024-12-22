@@ -281,8 +281,15 @@ namespace Radiostation
                             command.Parameters.AddWithValue("@title", editedPlaylist.Title);
                             command.Parameters.AddWithValue("@duration", editedPlaylist.Duration);
                             command.Parameters.AddWithValue("@id", editedPlaylist.Id);
-
-                            command.ExecuteNonQuery();
+                            try
+                            {
+                                command.ExecuteNonQuery();
+                                MessageBox.Show("Изменен плейлист.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Не удалось изменить плейлист.{ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                 }
@@ -328,9 +335,9 @@ namespace Radiostation
                         command.ExecuteNonQuery();
                         MessageBox.Show("Трек добавлен в плейлист.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Не удалось добавить трек. Возможно, он уже есть в плейлисте.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Ошибка при обновлении базы данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -351,14 +358,30 @@ namespace Radiostation
                 {
                     command.Parameters.AddWithValue("@playlistId", selectedComposition.PlaylistId);
                     command.Parameters.AddWithValue("@trackId", selectedComposition.TrackId);
-                    int rows = command.ExecuteNonQuery();
-                    if (rows > 0)
+                    try
                     {
-                        MessageBox.Show("Трек удален из плейлиста.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        int rows = command.ExecuteNonQuery();
+                        if (rows > 0)
+                        {
+                            MessageBox.Show("Трек удален из плейлиста.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Не удалось удалить трек.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        LoadPlaylists();
                     }
-                    else
+                    catch (SqlException sqlEx)
                     {
-                        MessageBox.Show("Не удалось удалить трек.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Обработка ошибок SQL
+                        MessageBox.Show($"SQL ошибка при обновлении базы данных: {sqlEx.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Логирование sqlEx.Message при необходимости
+                    }
+                    catch (Exception ex)
+                    {
+                        // Обработка других ошибок
+                        MessageBox.Show($"Ошибка при обновлении базы данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // Логирование ex.Message при необходимости
                     }
                 }
             }
@@ -505,6 +528,11 @@ namespace Radiostation
         private void label1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void exit_button_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Online_event_form));
             this.authorComboBox = new System.Windows.Forms.ComboBox();
             this.delete_button = new System.Windows.Forms.Button();
             this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
@@ -42,7 +43,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.genreComboBox = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOnlineEvents)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // authorComboBox
@@ -55,12 +58,14 @@
             // 
             // delete_button
             // 
+            this.delete_button.BackColor = System.Drawing.Color.Red;
+            this.delete_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.delete_button.Location = new System.Drawing.Point(314, 134);
             this.delete_button.Name = "delete_button";
             this.delete_button.Size = new System.Drawing.Size(75, 23);
             this.delete_button.TabIndex = 48;
             this.delete_button.Text = "Удалить";
-            this.delete_button.UseVisualStyleBackColor = true;
+            this.delete_button.UseVisualStyleBackColor = false;
             this.delete_button.Click += new System.EventHandler(this.delete_button_Click);
             // 
             // dateTimePicker
@@ -74,12 +79,14 @@
             // 
             // exit_button
             // 
+            this.exit_button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.exit_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exit_button.Location = new System.Drawing.Point(706, 457);
             this.exit_button.Name = "exit_button";
             this.exit_button.Size = new System.Drawing.Size(75, 23);
             this.exit_button.TabIndex = 46;
             this.exit_button.Text = "Выход";
-            this.exit_button.UseVisualStyleBackColor = true;
+            this.exit_button.UseVisualStyleBackColor = false;
             this.exit_button.Click += new System.EventHandler(this.exit_button_Click);
             // 
             // label3
@@ -102,12 +109,14 @@
             // 
             // search_button
             // 
+            this.search_button.BackColor = System.Drawing.Color.Yellow;
+            this.search_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.search_button.Location = new System.Drawing.Point(26, 134);
             this.search_button.Name = "search_button";
             this.search_button.Size = new System.Drawing.Size(75, 23);
             this.search_button.TabIndex = 42;
             this.search_button.Text = "Найти";
-            this.search_button.UseVisualStyleBackColor = true;
+            this.search_button.UseVisualStyleBackColor = false;
             this.search_button.Click += new System.EventHandler(this.search_button_Click);
             // 
             // dataGridViewOnlineEvents
@@ -126,12 +135,14 @@
             // 
             // button1
             // 
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Location = new System.Drawing.Point(120, 134);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(172, 23);
             this.button1.TabIndex = 51;
             this.button1.Text = "Обновить базу событий";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // titleComboBox
@@ -177,10 +188,23 @@
             this.label5.TabIndex = 55;
             this.label5.Text = "Жанр";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Enabled = false;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.ImageLocation = "";
+            this.pictureBox1.Location = new System.Drawing.Point(-55, 218);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(304, 276);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 72;
+            this.pictureBox1.TabStop = false;
+            // 
             // Online_event_form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.SkyBlue;
             this.ClientSize = new System.Drawing.Size(780, 493);
             this.Controls.Add(this.genreComboBox);
             this.Controls.Add(this.label5);
@@ -196,10 +220,13 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.search_button);
             this.Controls.Add(this.dataGridViewOnlineEvents);
+            this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Online_event_form";
-            this.Text = "Эфирные собития";
+            this.Text = "Эфирные события";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOnlineEvents)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -221,5 +248,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox genreComboBox;
         private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.PictureBox pictureBox1;
     }
 }

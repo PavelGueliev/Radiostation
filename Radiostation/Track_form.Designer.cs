@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Track_form));
             this.delete_button = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -47,20 +48,24 @@
             this.label7 = new System.Windows.Forms.Label();
             this.exit_button = new System.Windows.Forms.Button();
             this.sqlConnection1 = new System.Data.SqlClient.SqlConnection();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Hours_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Minut_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Second_numericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // delete_button
             // 
+            this.delete_button.BackColor = System.Drawing.Color.Red;
+            this.delete_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.delete_button.Location = new System.Drawing.Point(214, 274);
             this.delete_button.Name = "delete_button";
             this.delete_button.Size = new System.Drawing.Size(75, 23);
             this.delete_button.TabIndex = 26;
             this.delete_button.Text = "Удалить";
-            this.delete_button.UseVisualStyleBackColor = true;
+            this.delete_button.UseVisualStyleBackColor = false;
             this.delete_button.Click += new System.EventHandler(this.delete_button_Click_1);
             // 
             // label3
@@ -93,22 +98,26 @@
             // 
             // search_button
             // 
+            this.search_button.BackColor = System.Drawing.Color.Yellow;
+            this.search_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.search_button.Location = new System.Drawing.Point(22, 274);
             this.search_button.Name = "search_button";
             this.search_button.Size = new System.Drawing.Size(75, 23);
             this.search_button.TabIndex = 19;
             this.search_button.Text = "Найти";
-            this.search_button.UseVisualStyleBackColor = true;
+            this.search_button.UseVisualStyleBackColor = false;
             this.search_button.Click += new System.EventHandler(this.search_button_Click_1);
             // 
             // add_button
             // 
+            this.add_button.BackColor = System.Drawing.Color.Lime;
+            this.add_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.add_button.Location = new System.Drawing.Point(118, 274);
             this.add_button.Name = "add_button";
             this.add_button.Size = new System.Drawing.Size(75, 23);
             this.add_button.TabIndex = 18;
             this.add_button.Text = "Добавить";
-            this.add_button.UseVisualStyleBackColor = true;
+            this.add_button.UseVisualStyleBackColor = false;
             this.add_button.Click += new System.EventHandler(this.add_button_Click_1);
             // 
             // dataGridView1
@@ -208,12 +217,14 @@
             // 
             // exit_button
             // 
+            this.exit_button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.exit_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.exit_button.Location = new System.Drawing.Point(693, 522);
             this.exit_button.Name = "exit_button";
             this.exit_button.Size = new System.Drawing.Size(75, 23);
             this.exit_button.TabIndex = 37;
             this.exit_button.Text = "Выход";
-            this.exit_button.UseVisualStyleBackColor = true;
+            this.exit_button.UseVisualStyleBackColor = false;
             this.exit_button.Click += new System.EventHandler(this.exit_button_Click_1);
             // 
             // sqlConnection1
@@ -222,10 +233,23 @@
     "ecurity=True;Pooling=False;Encrypt=True;TrustServerCertificate=True";
             this.sqlConnection1.FireInfoMessageEventOnUserErrors = false;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Enabled = false;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.ImageLocation = "";
+            this.pictureBox1.Location = new System.Drawing.Point(-125, 189);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(414, 367);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 73;
+            this.pictureBox1.TabStop = false;
+            // 
             // Track_form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.SkyBlue;
             this.ClientSize = new System.Drawing.Size(780, 557);
             this.Controls.Add(this.exit_button);
             this.Controls.Add(this.label7);
@@ -245,7 +269,9 @@
             this.Controls.Add(this.search_button);
             this.Controls.Add(this.add_button);
             this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Track_form";
             this.Text = "Изменение треков";
             this.Load += new System.EventHandler(this.Track_form_Load);
@@ -253,6 +279,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.Hours_numericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Minut_numericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Second_numericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -279,5 +306,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button exit_button;
         private System.Data.SqlClient.SqlConnection sqlConnection1;
+        public System.Windows.Forms.PictureBox pictureBox1;
     }
 }

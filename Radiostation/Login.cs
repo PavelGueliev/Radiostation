@@ -32,5 +32,13 @@ namespace Radiostation
             formManager.Show();
             this.Hide();
         }
+
+        private void visitor_button_Click(object sender, EventArgs e)
+        {
+            Guest guest = new Guest();
+            guest.FormClosed += (s, args) => this.Show();
+            guest.Show();
+            this.Hide();
+        }
     }
 }

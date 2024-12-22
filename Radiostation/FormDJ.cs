@@ -85,5 +85,10 @@ namespace Radiostation
         {
             this.Close();
         }
+
+        private void FormDJ_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

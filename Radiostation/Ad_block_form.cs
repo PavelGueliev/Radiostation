@@ -116,7 +116,10 @@ namespace Radiostation
                 dataGridViewComposition.Columns["BlockId"].Visible = false;
             if (dataGridViewComposition.Columns["RecordId"] != null)
                 dataGridViewComposition.Columns["RecordId"].Visible = false;
-
+            if (dataGridViewComposition.Columns["Title"] != null)
+                dataGridViewComposition.Columns["Title"].ReadOnly = true;
+            if (dataGridViewComposition.Columns["Duration"] != null)
+                dataGridViewComposition.Columns["Duration"].ReadOnly = true;
             dataGridViewComposition.Columns["Title"].HeaderText = "Название ролика";
             dataGridViewComposition.Columns["Duration"].HeaderText = "Продолжительность";
         }
@@ -188,8 +191,17 @@ namespace Radiostation
                             command.Parameters.AddWithValue("@title", editedBlock.Title);
                             command.Parameters.AddWithValue("@duration", editedBlock.Duration);
                             command.Parameters.AddWithValue("@id", editedBlock.Id);
-
-                            command.ExecuteNonQuery();
+                            try
+                            {
+                                command.ExecuteNonQuery();
+                                MessageBox.Show("Блок изменен.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Ошибка при обновлении базы данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                              
+                            }
+                            
                         }
                     }
                 }
@@ -363,6 +375,11 @@ namespace Radiostation
                 int maxId = (int)cmd.ExecuteScalar();
                 return maxId + 1;
             }
+        }
+
+        private void Ad_block_form_Load_1(object sender, EventArgs e)
+        {
+
         }
     }
 
