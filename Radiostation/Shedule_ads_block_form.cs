@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Radiostation
 {
@@ -53,11 +54,11 @@ namespace Radiostation
                     }
                 }
             }
-
+            
             presenterComboBox.DataSource = presenters;
             presenterComboBox.DisplayMember = "Value";
             presenterComboBox.ValueMember = "Key";
-            presenterComboBox.SelectedIndex = -1;
+            presenterComboBox.SelectedIndex = presenterComboBox.FindStringExact(Program.CurrentUsername);
         }
 
         private void LoadAdBlocks()
@@ -137,6 +138,8 @@ namespace Radiostation
                                 PresenterId = reader.GetInt32(reader.GetOrdinal("КодВедущего")),
                                 BlockId = reader.GetInt32(reader.GetOrdinal("КодБлока")),
                                 DateTime = reader.GetDateTime(reader.GetOrdinal("ДатаВремя")),
+                                DateTimeStop = reader.GetDateTime(reader.GetOrdinal("ДатаВремя"))
+                      .Add(reader.GetTimeSpan(reader.GetOrdinal("Продолжительность"))),
                                 PresenterName = reader.GetString(reader.GetOrdinal("ФИО")),
                                 BlockName = reader.GetString(reader.GetOrdinal("НазваниеБлока")),
                                 Duration = reader.GetTimeSpan(reader.GetOrdinal("Продолжительность"))
@@ -157,10 +160,13 @@ namespace Radiostation
 
             dataGridViewSheduleBlock.Columns["PresenterName"].HeaderText = "Ведущий";
             dataGridViewSheduleBlock.Columns["BlockName"].HeaderText = "Рекламный блок";
-            dataGridViewSheduleBlock.Columns["DateTime"].HeaderText = "Дата и время";
+            dataGridViewSheduleBlock.Columns["DateTime"].HeaderText = "Дата и время начала";
+            dataGridViewSheduleBlock.Columns["DateTimeStop"].HeaderText = "Дата и время окончания";
             dataGridViewSheduleBlock.Columns["Duration"].HeaderText = "Длительность";
             if (dataGridViewSheduleBlock.Columns["PresenterName"] != null)
                 dataGridViewSheduleBlock.Columns["PresenterName"].ReadOnly = true;
+            if (dataGridViewSheduleBlock.Columns["DateTimeStop"] != null)
+                dataGridViewSheduleBlock.Columns["DateTimeStop"].ReadOnly = true;
             if (dataGridViewSheduleBlock.Columns["BlockName"] != null)
                 dataGridViewSheduleBlock.Columns["BlockName"].ReadOnly = true;
             if (dataGridViewSheduleBlock.Columns["Duration"] != null)
@@ -303,12 +309,6 @@ namespace Radiostation
         {
             try
             {
-                if (!(presenterComboBox.SelectedValue is int pId) || pId <= 0)
-                {
-                    MessageBox.Show("Выберите ведущего.", "Ошибка валидации", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
                 if (!(adBlockComboBox.SelectedValue is int bId) || bId <= 0)
                 {
                     MessageBox.Show("Выберите рекламный блок.", "Ошибка валидации", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -322,17 +322,16 @@ namespace Radiostation
                 }
 
                 DateTime dt = dateTimePicker.Value;
-
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
                     int newId = GenerateScheduleId(connection);
 
-                    string insertQuery = "INSERT INTO Shedule_ads_block (КодЗаписи, КодВедущего, КодБлока, ДатаВремя) VALUES (@id, @presenterId, @blockId, @dateTime)";
+                    string insertQuery = "INSERT INTO Shedule_ads_block (КодЗаписи, КодВедущего, КодБлока, ДатаВремя) VALUES (@id, (select КодВедущего from Presenter where ФИО = @presenterId), @blockId, @dateTime)";
                     using (var command = new SqlCommand(insertQuery, connection))
                     {
                         command.Parameters.AddWithValue("@id", newId);
-                        command.Parameters.AddWithValue("@presenterId", pId);
+                        command.Parameters.AddWithValue("@presenterId", Program.CurrentUsername);
                         command.Parameters.AddWithValue("@blockId", bId);
                         command.Parameters.AddWithValue("@dateTime", dt);
 
@@ -342,6 +341,47 @@ namespace Radiostation
 
                 MessageBox.Show("Запись добавлена в расписание.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadSchedule();
+            }
+            catch (SqlException ex)
+            {
+                string userMessage;
+
+                switch (ex.Number)
+                {
+                    case 547:
+                        // Ошибка нарушения целостности при связи (FK) или ограничения CHECK
+                        // "The INSERT statement conflicted with the FOREIGN KEY constraint" и т.п.
+                        userMessage = "Ошибка нарушения целостности при связи или ограничения.";
+                        break;
+
+                    case 2627:
+                        // Нарушение UNIQUE или PRIMARY KEY
+                        // "Violation of PRIMARY KEY constraint" / "Violation of UNIQUE KEY constraint"
+                        userMessage = "Невозможно сохранить запись. Такую запись уже добавляли.";
+                        break;
+
+                    case 2601:
+                        // Аналогично 2627, нарушение уникального индекса
+                        userMessage = "Дубликат. Запись с такими уникальными полями уже существует.";
+                        break;
+
+
+                    case 50000:
+                        // Пользовательская ошибка, сгенерированная через RAISERROR(...) с number=50000
+                        userMessage = "Ошибка базы данных: " + ex.Message;
+                        break;
+
+                    default:
+                        // Все остальные ошибки. Можно вывести ex.Number и ex.Message полностью.
+                        userMessage = $"Ошибка (код {ex.Number}): {ex.Message}";
+                        break;
+                }
+
+                // Выводим конечное сообщение пользователю
+                MessageBox.Show(userMessage,
+                                "Ошибка SQL",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
@@ -413,7 +453,7 @@ namespace Radiostation
         public int BlockId { get; set; }
         public DateTime DateTime { get; set; }
         public TimeSpan Duration { get; set; }
-
+        public DateTime DateTimeStop { get; set; }
         public string PresenterName { get; set; }
         public string BlockName { get; set; }
     }

@@ -193,7 +193,7 @@ namespace Radiostation
                 return;
             }
 
-            if (textComboBoxAuthor.SelectedIndex < 0)
+            if (string.IsNullOrWhiteSpace(textBoxTitle.Text))
             {
                 MessageBox.Show("Выберите автора.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -231,10 +231,6 @@ namespace Radiostation
                     command.ExecuteNonQuery();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        while (reader.Read())
-                        {
-                            MessageBox.Show(reader.GetInt32(reader.GetOrdinal("id")).ToString());
-                        }
                     }
                 }
             }

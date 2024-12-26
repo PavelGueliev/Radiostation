@@ -90,5 +90,13 @@ namespace Radiostation
         {
 
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Shedule_Ads_And_Playlists shedule_Ads_And_Playlists = new Shedule_Ads_And_Playlists();
+            shedule_Ads_And_Playlists.FormClosed += (s, args) => this.Show();
+            shedule_Ads_And_Playlists.Show();
+            this.Hide();
+        }
     }
 }

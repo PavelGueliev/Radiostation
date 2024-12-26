@@ -161,6 +161,7 @@
             // 
             // presenterComboBox
             // 
+            this.presenterComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.presenterComboBox.FormattingEnabled = true;
             this.presenterComboBox.Location = new System.Drawing.Point(153, 35);
             this.presenterComboBox.Name = "presenterComboBox";
@@ -169,6 +170,7 @@
             // 
             // adBlockComboBox
             // 
+            this.adBlockComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.adBlockComboBox.FormattingEnabled = true;
             this.adBlockComboBox.Location = new System.Drawing.Point(153, 75);
             this.adBlockComboBox.Name = "adBlockComboBox";

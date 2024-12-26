@@ -42,6 +42,7 @@ namespace Radiostation
 
                     // Загрузка авторов
                     var authors = new List<string>();
+                    authors.Add("");
                     string queryAuthors = "SELECT DISTINCT author FROM Track";
                     using (var cmd = new SqlCommand(queryAuthors, connection))
                     using (var reader = cmd.ExecuteReader())
@@ -59,6 +60,7 @@ namespace Radiostation
 
                     // Загрузка жанров
                     var genres = new List<ComboBoxItem>();
+                    genres.Add(new ComboBoxItem("", -1));
                     string queryGenres = "SELECT id, title FROM Genre";
                     using (var cmd = new SqlCommand(queryGenres, connection))
                     using (var reader = cmd.ExecuteReader())
@@ -76,6 +78,7 @@ namespace Radiostation
 
                     // Загрузка названий треков
                     var titles = new List<string>();
+                    titles.Add("");
                     string queryTitles = "SELECT title FROM Track";
                     using (var cmd = new SqlCommand(queryTitles, connection))
                     using (var reader = cmd.ExecuteReader())
@@ -199,6 +202,7 @@ namespace Radiostation
                         SELECT 
                             oe.КодСобытия,
                             t.title AS Трек,
+                            t.Duration as Продолжительность,
                             t.author AS Автор,
                             g.Title AS Жанр,
                             oe.ДатаВремя AS [Дата воспроизведения]
@@ -252,6 +256,7 @@ namespace Radiostation
                             events.Add(new OnlineEvent
                             {
                                 EventId = reader.GetInt32(reader.GetOrdinal("КодСобытия")),
+                                Duration = reader.GetTimeSpan(reader.GetOrdinal("Продолжительность")),
                                 TrackTitle = reader["Трек"].ToString(),
                                 Author = reader["Автор"].ToString(),
                                 Genre = reader["Жанр"].ToString(),

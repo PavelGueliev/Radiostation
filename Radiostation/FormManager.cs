@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,33 +16,41 @@ namespace Radiostation
     public partial class FormManager : Form
     {
         private readonly PresenterRepository presenterRepository;
-
         private bool userEditing = false;
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void exit_button_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
 
         public FormManager()
         {
             InitializeComponent();
-            string connectionString = "Data Source=DESKTOP-6MQUQFM\\SQLEXPRESS;Initial Catalog=Radiostation;Integrated Security=True;Pooling=False;Encrypt=True;TrustServerCertificate=True"; // Укажите строку подключения
+            string connectionString = "Data Source=DESKTOP-6MQUQFM\\SQLEXPRESS;Initial Catalog=Radiostation;Integrated Security=True;Pooling=False;Encrypt=True;TrustServerCertificate=True";
             presenterRepository = new PresenterRepository(connectionString);
+        }
+
+        private void FormManager_Load(object sender, EventArgs e)
+        {
             RefreshDataGridView();
+        }
+
+        private void RefreshDataGridView()
+        {
+            var presenters = presenterRepository.SearchPresenters(null, null, null);
+            dataGridView1.DataSource = presenters;
+
+            // Скрываем первичный ключ
+            dataGridView1.Columns["КодВедущего"].Visible = false;
+
+            // Переименовываем столбцы
+            dataGridView1.Columns["ФИО"].HeaderText = "ФИО";
+            dataGridView1.Columns["НомерТелефона"].HeaderText = "Номер телефона";
+            dataGridView1.Columns["ДатаРождения"].HeaderText = "Дата рождения";
+            dataGridView1.Columns["Пароль"].HeaderText = "Пароль";
+
+            // Разрешаем редактировать все поля, чтобы пользователь мог менять пароль
+            dataGridView1.ReadOnly = false;
         }
 
         private void add_button_Click(object sender, EventArgs e)
         {
+            // Валидация
             if (string.IsNullOrEmpty(NameCombobox.Text))
             {
                 MessageBox.Show("Заполните поле ФИО", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -58,18 +67,63 @@ namespace Radiostation
                 return;
             }
 
+            // Получаем пароль из textBox
+            string password = passwordTextBox.Text;
+
             var presenter = new Presenter
             {
                 ФИО = NameCombobox.Text,
                 НомерТелефона = Number.Text,
-                ДатаРождения = dateTimePicker.Value
+                ДатаРождения = dateTimePicker.Value,
+                Пароль = password
             };
 
             try
             {
                 presenterRepository.AddPresenter(presenter);
                 MessageBox.Show("Запись успешно добавлена.");
-                RefreshDataGridView(); // Обновляем DataGridView
+                RefreshDataGridView();
+            }
+            catch (SqlException ex)
+            {
+                string userMessage;
+
+                switch (ex.Number)
+                {
+                    case 547:
+                        // Ошибка нарушения целостности при связи (FK) или ограничения CHECK
+                        // "The INSERT statement conflicted with the FOREIGN KEY constraint" и т.п.
+                        userMessage = "Ведущий должен быть старше 18";
+                        break;
+
+                    case 2627:
+                        // Нарушение UNIQUE или PRIMARY KEY
+                        // "Violation of PRIMARY KEY constraint" / "Violation of UNIQUE KEY constraint"
+                        userMessage = "Невозможно сохранить запись. Такую запись уже добавляли.";
+                        break;
+
+                    case 2601:
+                        // Аналогично 2627, нарушение уникального индекса
+                        userMessage = "Дубликат. Запись с такими уникальными полями уже существует.";
+                        break;
+
+
+                    case 50000:
+                        // Пользовательская ошибка, сгенерированная через RAISERROR(...) с number=50000
+                        userMessage = "Ошибка : " + ex.Message;
+                        break;
+
+                    default:
+                        // Все остальные ошибки. Можно вывести ex.Number и ex.Message полностью.
+                        userMessage = $"Ошибка  (код {ex.Number}): {ex.Message}";
+                        break;
+                }
+
+                // Выводим конечное сообщение пользователю
+                MessageBox.Show(userMessage,
+                                "Ошибка SQL",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
@@ -91,17 +145,57 @@ namespace Radiostation
         {
             if (dataGridView1.SelectedRows.Count > 0)
             {
-                int id = (int)dataGridView1.SelectedRows[0].Cells[0].Value;
-
+                int id = (int)dataGridView1.SelectedRows[0].Cells["КодВедущего"].Value;
                 try
                 {
                     presenterRepository.DeletePresenter(id);
                     MessageBox.Show("Запись успешно удалена.");
-                    RefreshDataGridView(); // Обновляем DataGridView
+                    RefreshDataGridView();
+                }
+                catch (SqlException ex)
+                {
+                    string userMessage;
+
+                    switch (ex.Number)
+                    {
+                        case 547:
+                            // Ошибка нарушения целостности при связи (FK) или ограничения CHECK
+                            // "The INSERT statement conflicted with the FOREIGN KEY constraint" и т.п.
+                            userMessage = "Ошибка нарушения целостности при связи или ограничения.";
+                            break;
+
+                        case 2627:
+                            // Нарушение UNIQUE или PRIMARY KEY
+                            // "Violation of PRIMARY KEY constraint" / "Violation of UNIQUE KEY constraint"
+                            userMessage = "Невозможно сохранить запись. Такую запись уже добавляли.";
+                            break;
+
+                        case 2601:
+                            // Аналогично 2627, нарушение уникального индекса
+                            userMessage = "Дубликат. Запись с такими уникальными полями уже существует.";
+                            break;
+
+
+                        case 50000:
+                            // Пользовательская ошибка, сгенерированная через RAISERROR(...) с number=50000
+                            userMessage = "Ошибка базы данных: " + ex.Message;
+                            break;
+
+                        default:
+                            // Все остальные ошибки. Можно вывести ex.Number и ex.Message полностью.
+                            userMessage = $"Ошибка SQL (код {ex.Number}): {ex.Message}";
+                            break;
+                    }
+
+                    // Выводим конечное сообщение пользователю
+                    MessageBox.Show(userMessage,
+                                    "Ошибка",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Ошибка при удалении записи: " + ex.Message);
+                    MessageBox.Show(ex.Message);
                 }
             }
             else
@@ -110,52 +204,91 @@ namespace Radiostation
             }
         }
 
-        private void RefreshDataGridView()
-        {
-            var presenters = presenterRepository.SearchPresenters(null, null, null);
-            dataGridView1.DataSource = presenters;
-            dataGridView1.Columns["КодВедущего"].Visible = false;
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void FormManager_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dataGridView1_RowValidated_1(object sender, DataGridViewCellEventArgs e)
-        {
-            // Получение строки
-            if (userEditing)
-            {
-                userEditing = false; // Сбрасываем флаг
-                var updatedRow = dataGridView1.Rows[e.RowIndex];
-                int id = (int)updatedRow.Cells["КодВедущего"].Value;
-                string name = (string)updatedRow.Cells["ФИО"].Value;
-                string number = (string)updatedRow.Cells["НомерТелефона"].Value;
-                DateTime? birthDate = (DateTime)updatedRow.Cells["ДатаРождения"].Value;
-                presenterRepository.UpdatePresenter(id, name, number, birthDate);
-            }
-
-        }
-
-        private void dataGridView1_RowEnter(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
         private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             userEditing = true;
         }
 
-        private void FormManager_Load(object sender, EventArgs e)
+        private void dataGridView1_RowValidated_1(object sender, DataGridViewCellEventArgs e)
         {
+            if (!userEditing) return;
+            userEditing = false;
 
+            if (e.RowIndex >= 0 && e.RowIndex < dataGridView1.Rows.Count)
+            {
+                var updatedRow = dataGridView1.Rows[e.RowIndex];
+
+                int id = (int)updatedRow.Cells["КодВедущего"].Value;
+                string name = (string)updatedRow.Cells["ФИО"].Value;
+                string number = (string)updatedRow.Cells["НомерТелефона"].Value;
+                DateTime birthDate = (DateTime)updatedRow.Cells["ДатаРождения"].Value;
+                string password = (string)updatedRow.Cells["Пароль"].Value;
+
+                try
+                {
+                    presenterRepository.UpdatePresenter(id, name, number, birthDate, password);
+                }
+                catch (SqlException ex)
+                {
+                    string userMessage;
+
+                    switch (ex.Number)
+                    {
+                        case 547:
+                            // Ошибка нарушения целостности при связи (FK) или ограничения CHECK
+                            // "The INSERT statement conflicted with the FOREIGN KEY constraint" и т.п.
+                            userMessage = "Ведущий должен быть старше 18";
+                            break;
+
+                        case 2627:
+                            // Нарушение UNIQUE или PRIMARY KEY
+                            // "Violation of PRIMARY KEY constraint" / "Violation of UNIQUE KEY constraint"
+                            userMessage = "Невозможно сохранить запись. Такую запись уже добавляли.";
+                            break;
+
+                        case 2601:
+                            // Аналогично 2627, нарушение уникального индекса
+                            userMessage = "Дубликат. Запись с такими уникальными полями уже существует.";
+                            break;
+
+
+                        case 50000:
+                            // Пользовательская ошибка, сгенерированная через RAISERROR(...) с number=50000
+                            userMessage = "Ошибка базы данных: " + ex.Message;
+                            break;
+
+                        default:
+                            // Все остальные ошибки. Можно вывести ex.Number и ex.Message полностью.
+                            userMessage = $"Ошибка SQL (код {ex.Number}): {ex.Message}";
+                            break;
+                    }
+
+                    // Выводим конечное сообщение пользователю
+                    MessageBox.Show(userMessage,
+                                    "Ошибка SQL",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка при обновлении: " + ex.Message);
+                }
+            }
+        }
+
+        private void exit_button_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            // Можно удалить если не нужно
+        }
+
+        private void FormManager_TextChanged(object sender, EventArgs e)
+        {
+            // Можно удалить если не нужно
         }
     }
 }

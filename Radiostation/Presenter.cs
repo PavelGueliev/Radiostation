@@ -12,5 +12,8 @@ namespace Radiostation
         public string ФИО { get; set; }
         public string НомерТелефона { get; set; }
         public DateTime ДатаРождения { get; set; }
+
+        // Это поле будет загружаться и сохраняться в Users_radiostation.
+        public string Пароль { get; set; }
     }
 }

@@ -39,6 +39,7 @@
             this.genre_form_button = new System.Windows.Forms.Button();
             this.online_event_form_button = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -46,11 +47,11 @@
             // 
             this.playlists_form_button.BackColor = System.Drawing.Color.Gold;
             this.playlists_form_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.playlists_form_button.Location = new System.Drawing.Point(223, 215);
+            this.playlists_form_button.Location = new System.Drawing.Point(221, 163);
             this.playlists_form_button.Name = "playlists_form_button";
             this.playlists_form_button.Size = new System.Drawing.Size(348, 41);
             this.playlists_form_button.TabIndex = 0;
-            this.playlists_form_button.Text = "Плейлисты";
+            this.playlists_form_button.Text = "Управление плейлистами";
             this.playlists_form_button.UseVisualStyleBackColor = false;
             this.playlists_form_button.Click += new System.EventHandler(this.playlists_form_button_Click);
             // 
@@ -58,11 +59,11 @@
             // 
             this.ads_block_form_button.BackColor = System.Drawing.Color.Gold;
             this.ads_block_form_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ads_block_form_button.Location = new System.Drawing.Point(223, 262);
+            this.ads_block_form_button.Location = new System.Drawing.Point(221, 210);
             this.ads_block_form_button.Name = "ads_block_form_button";
             this.ads_block_form_button.Size = new System.Drawing.Size(348, 43);
             this.ads_block_form_button.TabIndex = 1;
-            this.ads_block_form_button.Text = "Рекламные блоки";
+            this.ads_block_form_button.Text = "Управление рекламными блоками";
             this.ads_block_form_button.UseVisualStyleBackColor = false;
             this.ads_block_form_button.Click += new System.EventHandler(this.ads_block_form_button_Click);
             // 
@@ -70,11 +71,11 @@
             // 
             this.Track_form_button.BackColor = System.Drawing.Color.Gold;
             this.Track_form_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Track_form_button.Location = new System.Drawing.Point(223, 64);
+            this.Track_form_button.Location = new System.Drawing.Point(221, 12);
             this.Track_form_button.Name = "Track_form_button";
             this.Track_form_button.Size = new System.Drawing.Size(348, 45);
             this.Track_form_button.TabIndex = 2;
-            this.Track_form_button.Text = "Треки";
+            this.Track_form_button.Text = "Управление треками";
             this.Track_form_button.UseVisualStyleBackColor = false;
             this.Track_form_button.Click += new System.EventHandler(this.Track_form_button_Click);
             // 
@@ -82,11 +83,11 @@
             // 
             this.shedule_playlists_form_button.BackColor = System.Drawing.Color.Gold;
             this.shedule_playlists_form_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.shedule_playlists_form_button.Location = new System.Drawing.Point(223, 311);
+            this.shedule_playlists_form_button.Location = new System.Drawing.Point(221, 259);
             this.shedule_playlists_form_button.Name = "shedule_playlists_form_button";
             this.shedule_playlists_form_button.Size = new System.Drawing.Size(348, 47);
             this.shedule_playlists_form_button.TabIndex = 3;
-            this.shedule_playlists_form_button.Text = "Расписание плейлистов";
+            this.shedule_playlists_form_button.Text = "Настройка расписания плейлистов";
             this.shedule_playlists_form_button.UseVisualStyleBackColor = false;
             this.shedule_playlists_form_button.Click += new System.EventHandler(this.shedule_playlists_form_button_Click);
             // 
@@ -106,11 +107,11 @@
             // 
             this.shedule_ads_form_button.BackColor = System.Drawing.Color.Gold;
             this.shedule_ads_form_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.shedule_ads_form_button.Location = new System.Drawing.Point(223, 364);
+            this.shedule_ads_form_button.Location = new System.Drawing.Point(221, 312);
             this.shedule_ads_form_button.Name = "shedule_ads_form_button";
             this.shedule_ads_form_button.Size = new System.Drawing.Size(348, 50);
             this.shedule_ads_form_button.TabIndex = 5;
-            this.shedule_ads_form_button.Text = "Расписание рекламы";
+            this.shedule_ads_form_button.Text = "Настройка расписания рекламы";
             this.shedule_ads_form_button.UseVisualStyleBackColor = false;
             this.shedule_ads_form_button.Click += new System.EventHandler(this.shedule_ads_form_button_Click);
             // 
@@ -118,11 +119,11 @@
             // 
             this.ads_form_button.BackColor = System.Drawing.Color.Gold;
             this.ads_form_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ads_form_button.Location = new System.Drawing.Point(223, 166);
+            this.ads_form_button.Location = new System.Drawing.Point(221, 114);
             this.ads_form_button.Name = "ads_form_button";
             this.ads_form_button.Size = new System.Drawing.Size(348, 43);
             this.ads_form_button.TabIndex = 6;
-            this.ads_form_button.Text = "Реклама";
+            this.ads_form_button.Text = "Управление рекламой";
             this.ads_form_button.UseVisualStyleBackColor = false;
             this.ads_form_button.Click += new System.EventHandler(this.ads_form_button_Click);
             // 
@@ -130,11 +131,11 @@
             // 
             this.genre_form_button.BackColor = System.Drawing.Color.Gold;
             this.genre_form_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.genre_form_button.Location = new System.Drawing.Point(223, 115);
+            this.genre_form_button.Location = new System.Drawing.Point(221, 63);
             this.genre_form_button.Name = "genre_form_button";
             this.genre_form_button.Size = new System.Drawing.Size(348, 45);
             this.genre_form_button.TabIndex = 7;
-            this.genre_form_button.Text = "Жанр";
+            this.genre_form_button.Text = "Управление жанрами";
             this.genre_form_button.UseVisualStyleBackColor = false;
             this.genre_form_button.Click += new System.EventHandler(this.genre_form_button_Click);
             // 
@@ -142,11 +143,11 @@
             // 
             this.online_event_form_button.BackColor = System.Drawing.Color.Gold;
             this.online_event_form_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.online_event_form_button.Location = new System.Drawing.Point(223, 420);
+            this.online_event_form_button.Location = new System.Drawing.Point(221, 424);
             this.online_event_form_button.Name = "online_event_form_button";
             this.online_event_form_button.Size = new System.Drawing.Size(348, 50);
             this.online_event_form_button.TabIndex = 8;
-            this.online_event_form_button.Text = "Эфирные события";
+            this.online_event_form_button.Text = "Управление эфирными событиями";
             this.online_event_form_button.UseVisualStyleBackColor = false;
             this.online_event_form_button.Click += new System.EventHandler(this.online_event_form_button_Click);
             // 
@@ -162,12 +163,25 @@
             this.pictureBox1.TabIndex = 49;
             this.pictureBox1.TabStop = false;
             // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.Gold;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Location = new System.Drawing.Point(221, 368);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(348, 50);
+            this.button1.TabIndex = 50;
+            this.button1.Text = "Просмотр расписания блоков и плейлистов";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // FormDJ
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SkyBlue;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.online_event_form_button);
             this.Controls.Add(this.genre_form_button);
             this.Controls.Add(this.ads_form_button);
@@ -202,6 +216,7 @@
         private System.Windows.Forms.Button genre_form_button;
         private System.Windows.Forms.Button online_event_form_button;
         public System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button button1;
     }
 }
 

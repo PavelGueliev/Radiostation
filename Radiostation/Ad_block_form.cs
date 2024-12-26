@@ -196,6 +196,47 @@ namespace Radiostation
                                 command.ExecuteNonQuery();
                                 MessageBox.Show("Блок изменен.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
+                            catch (SqlException ex)
+                            {
+                                string userMessage;
+
+                                switch (ex.Number)
+                                {
+                                    case 547:
+                                        // Ошибка нарушения целостности при связи (FK) или ограничения CHECK
+                                        // "The INSERT statement conflicted with the FOREIGN KEY constraint" и т.п.
+                                        userMessage = "Нарушение целостности данных.";
+                                        break;
+
+                                    case 2627:
+                                        // Нарушение UNIQUE или PRIMARY KEY
+                                        // "Violation of PRIMARY KEY constraint" / "Violation of UNIQUE KEY constraint"
+                                        userMessage = "Невозможно сохранить запись. Такую запись уже добавляли.";
+                                        break;
+
+                                    case 2601:
+                                        // Аналогично 2627, нарушение уникального индекса
+                                        userMessage = "Дубликат. Запись с такими уникальными полями уже существует.";
+                                        break;
+
+
+                                    case 50000:
+                                        // Пользовательская ошибка, сгенерированная через RAISERROR(...) с number=50000
+                                        userMessage = "Ошибка базы данных: " + ex.Message;
+                                        break;
+
+                                    default:
+                                        // Все остальные ошибки. Можно вывести ex.Number и ex.Message полностью.
+                                        userMessage = $"Ошибка SQL (код {ex.Number}): {ex.Message}";
+                                        break;
+                                }
+
+                                // Выводим конечное сообщение пользователю
+                                MessageBox.Show(userMessage,
+                                                "Ошибка SQL",
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Error);
+                            }
                             catch (Exception ex)
                             {
                                 MessageBox.Show($"Ошибка при обновлении базы данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -223,7 +264,7 @@ namespace Radiostation
         private void addAdBlockButton_Click(object sender, EventArgs e)
         {
             string blockName = adBlockTextBox.Text;
-            TimeSpan duration = TimeSpan.FromSeconds(1); // Пример: пусть по умолчанию 30 минут
+            TimeSpan duration = TimeSpan.FromSeconds(1); // Пример: пусть по умолчанию 1 секунду
 
             if (string.IsNullOrWhiteSpace(blockName))
             {
@@ -329,6 +370,47 @@ namespace Radiostation
                             MessageBox.Show("Не удалось добавить ролик. Возможно, такого ролика не существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
+                    catch (SqlException ex)
+                    {
+                        string userMessage;
+
+                        switch (ex.Number)
+                        {
+                            case 547:
+                                // Ошибка нарушения целостности при связи (FK) или ограничения CHECK
+                                // "The INSERT statement conflicted with the FOREIGN KEY constraint" и т.п.
+                                userMessage = "Нарушение целостности данных.";
+                                break;
+
+                            case 2627:
+                                // Нарушение UNIQUE или PRIMARY KEY
+                                // "Violation of PRIMARY KEY constraint" / "Violation of UNIQUE KEY constraint"
+                                userMessage = "Невозможно сохранить запись. Такую запись уже добавляли.";
+                                break;
+
+                            case 2601:
+                                // Аналогично 2627, нарушение уникального индекса
+                                userMessage = "Дубликат. Запись с такими уникальными полями уже существует.";
+                                break;
+
+
+                            case 50000:
+                                // Пользовательская ошибка, сгенерированная через RAISERROR(...) с number=50000
+                                userMessage = "Ошибка базы данных: " + ex.Message;
+                                break;
+
+                            default:
+                                // Все остальные ошибки. Можно вывести ex.Number и ex.Message полностью.
+                                userMessage = $"Ошибка SQL (код {ex.Number}): {ex.Message}";
+                                break;
+                        }
+
+                        // Выводим конечное сообщение пользователю
+                        MessageBox.Show(userMessage,
+                                        "Ошибка SQL",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                    }
                     catch
                     {
                         MessageBox.Show("Ролик уже есть в данном блоке или произошла ошибка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -352,14 +434,56 @@ namespace Radiostation
                 {
                     command.Parameters.AddWithValue("@recordId", selectedComposition.RecordId);
                     command.Parameters.AddWithValue("@blockId", selectedComposition.BlockId);
-                    int rows = command.ExecuteNonQuery();
-                    if (rows > 0)
+                    try
                     {
+                        int rows = command.ExecuteNonQuery();
                         MessageBox.Show("Ролик удален из рекламного блока.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    else
+                    catch (SqlException ex)
+                    {
+                        string userMessage;
+
+                        switch (ex.Number)
+                        {
+                            case 547:
+                                // Ошибка нарушения целостности при связи (FK) или ограничения CHECK
+                                // "The INSERT statement conflicted with the FOREIGN KEY constraint" и т.п.
+                                userMessage = "В блоке должен быть хотя бы 1 ролик";
+                                break;
+
+                            case 2627:
+                                // Нарушение UNIQUE или PRIMARY KEY
+                                // "Violation of PRIMARY KEY constraint" / "Violation of UNIQUE KEY constraint"
+                                userMessage = "Невозможно сохранить запись. Такую запись уже добавляли.";
+                                break;
+
+                            case 2601:
+                                // Аналогично 2627, нарушение уникального индекса
+                                userMessage = "Дубликат. Запись с такими уникальными полями уже существует.";
+                                break;
+
+
+                            case 50000:
+                                // Пользовательская ошибка, сгенерированная через RAISERROR(...) с number=50000
+                                userMessage = "Ошибка базы данных: " + ex.Message;
+                                break;
+
+                            default:
+                                // Все остальные ошибки. Можно вывести ex.Number и ex.Message полностью.
+                                userMessage = $"Ошибка SQL (код {ex.Number}): {ex.Message}";
+                                break;
+                        }
+
+                        // Выводим конечное сообщение пользователю
+                        MessageBox.Show(userMessage,
+                                        "Ошибка SQL",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                    }
+                    catch (Exception ex)
                     {
                         MessageBox.Show("Не удалось удалить ролик из блока.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                     }
                 }
             }

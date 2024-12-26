@@ -53,11 +53,11 @@ namespace Radiostation
                     }
                 }
             }
-
+            
             presenterComboBox.DataSource = presenters;
             presenterComboBox.DisplayMember = "Value";
             presenterComboBox.ValueMember = "Key";
-            presenterComboBox.SelectedIndex = -1;
+            presenterComboBox.SelectedIndex = presenterComboBox.FindStringExact(Program.CurrentUsername);
         }
 
         private void LoadPlaylists()
@@ -136,6 +136,8 @@ namespace Radiostation
                                 PresenterId = reader.GetInt32(reader.GetOrdinal("КодВедущего")),
                                 PlaylistId = reader.GetInt32(reader.GetOrdinal("КодПлейлиста")),
                                 DateTime = reader.GetDateTime(reader.GetOrdinal("ДатаВремя")),
+                                DateTimeStop = reader.GetDateTime(reader.GetOrdinal("ДатаВремя"))
+                      .Add(reader.GetTimeSpan(reader.GetOrdinal("Продолжительность"))),
                                 PresenterName = reader.GetString(reader.GetOrdinal("ФИО")),
                                 PlaylistName = reader.GetString(reader.GetOrdinal("НазваниеПлейлиста")),
                                 Duration = (TimeSpan)reader["Продолжительность"]
@@ -156,12 +158,15 @@ namespace Radiostation
 
             dataGridViewShedulePlaylist.Columns["PresenterName"].HeaderText = "Ведущий";
             dataGridViewShedulePlaylist.Columns["PlaylistName"].HeaderText = "Плейлист";
-            dataGridViewShedulePlaylist.Columns["DateTime"].HeaderText = "Дата и время";
+            dataGridViewShedulePlaylist.Columns["DateTime"].HeaderText = "Дата и время начала";
+            dataGridViewShedulePlaylist.Columns["DateTimeStop"].HeaderText = "Дата и время окончания";
             dataGridViewShedulePlaylist.Columns["Duration"].HeaderText = "Длительность";
 
             // Делаем некоторые поля только для чтения
             if (dataGridViewShedulePlaylist.Columns["PresenterName"] != null)
                 dataGridViewShedulePlaylist.Columns["PresenterName"].ReadOnly = true;
+            if (dataGridViewShedulePlaylist.Columns["DateTimeStop"] != null)
+                dataGridViewShedulePlaylist.Columns["DateTimeStop"].ReadOnly = true;
             if (dataGridViewShedulePlaylist.Columns["PlaylistName"] != null)
                 dataGridViewShedulePlaylist.Columns["PlaylistName"].ReadOnly = true;
             if (dataGridViewShedulePlaylist.Columns["Duration"] != null)
@@ -315,11 +320,6 @@ namespace Radiostation
         {
             try
             {
-                if (!(presenterComboBox.SelectedValue is int pId) || pId <= 0)
-                {
-                    MessageBox.Show("Выберите ведущего.", "Ошибка валидации", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
 
                 if (!(playlistComboBox.SelectedValue is int plId) || plId <= 0)
                 {
@@ -340,11 +340,11 @@ namespace Radiostation
                     connection.Open();
                     int newId = GenerateScheduleId(connection);
 
-                    string insertQuery = "INSERT INTO Shedule_playlists (КодЗаписи, КодВедущего, КодПлейлиста, ДатаВремя) VALUES (@id, @presenterId, @playlistId, @dateTime)";
+                    string insertQuery = "INSERT INTO Shedule_playlists (КодЗаписи, КодВедущего, КодПлейлиста, ДатаВремя) VALUES (@id, (select КодВедущего from Presenter where ФИО = @presenterId), @playlistId, @dateTime)";
                     using (var command = new SqlCommand(insertQuery, connection))
                     {
                         command.Parameters.AddWithValue("@id", newId);
-                        command.Parameters.AddWithValue("@presenterId", pId);
+                        command.Parameters.AddWithValue("@presenterId", Program.CurrentUsername);
                         command.Parameters.AddWithValue("@playlistId", plId);
                         command.Parameters.AddWithValue("@dateTime", dt);
 
@@ -354,6 +354,47 @@ namespace Radiostation
 
                 MessageBox.Show("Запись добавлена в расписание.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadSchedule();
+            }
+            catch (SqlException ex)
+            {
+                string userMessage;
+
+                switch (ex.Number)
+                {
+                    case 547:
+                        // Ошибка нарушения целостности при связи (FK) или ограничения CHECK
+                        // "The INSERT statement conflicted with the FOREIGN KEY constraint" и т.п.
+                        userMessage = "Ошибка нарушения целостности при связи или ограничения.";
+                        break;
+
+                    case 2627:
+                        // Нарушение UNIQUE или PRIMARY KEY
+                        // "Violation of PRIMARY KEY constraint" / "Violation of UNIQUE KEY constraint"
+                        userMessage = "Невозможно сохранить запись. Такую запись уже добавляли.";
+                        break;
+
+                    case 2601:
+                        // Аналогично 2627, нарушение уникального индекса
+                        userMessage = "Дубликат. Запись с такими уникальными полями уже существует.";
+                        break;
+
+
+                    case 50000:
+                        // Пользовательская ошибка, сгенерированная через RAISERROR(...) с number=50000
+                        userMessage = "Ошибка базы данных: " + ex.Message;
+                        break;
+
+                    default:
+                        // Все остальные ошибки. Можно вывести ex.Number и ex.Message полностью.
+                        userMessage = $"Ошибка (код {ex.Number}): {ex.Message}";
+                        break;
+                }
+
+                // Выводим конечное сообщение пользователю
+                MessageBox.Show(userMessage,
+                                "Ошибка",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
@@ -424,9 +465,10 @@ namespace Radiostation
         public int PresenterId { get; set; }
         public int PlaylistId { get; set; }
         public DateTime DateTime { get; set; }
-
+        public DateTime DateTimeStop { get; set; }
+        public TimeSpan Duration { get; set; }
         public string PresenterName { get; set; }
         public string PlaylistName { get; set; }
-        public TimeSpan Duration { get; set; } // Длительность плейлиста
+         // Длительность плейлиста
     }
 }

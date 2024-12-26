@@ -41,6 +41,8 @@
             this.NameCombobox = new System.Windows.Forms.TextBox();
             this.Number = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.passwordTextBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -86,7 +88,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(23, 65);
+            this.label1.Location = new System.Drawing.Point(23, 49);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 3;
@@ -96,7 +98,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(23, 96);
+            this.label2.Location = new System.Drawing.Point(23, 71);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(93, 13);
             this.label2.TabIndex = 4;
@@ -146,16 +148,16 @@
             // 
             // NameCombobox
             // 
-            this.NameCombobox.Location = new System.Drawing.Point(122, 49);
+            this.NameCombobox.Location = new System.Drawing.Point(122, 33);
             this.NameCombobox.Name = "NameCombobox";
-            this.NameCombobox.Size = new System.Drawing.Size(100, 20);
+            this.NameCombobox.Size = new System.Drawing.Size(137, 20);
             this.NameCombobox.TabIndex = 17;
             // 
             // Number
             // 
-            this.Number.Location = new System.Drawing.Point(122, 93);
+            this.Number.Location = new System.Drawing.Point(122, 68);
             this.Number.Name = "Number";
-            this.Number.Size = new System.Drawing.Size(100, 20);
+            this.Number.Size = new System.Drawing.Size(137, 20);
             this.Number.TabIndex = 18;
             // 
             // pictureBox1
@@ -170,12 +172,30 @@
             this.pictureBox1.TabIndex = 50;
             this.pictureBox1.TabStop = false;
             // 
+            // passwordTextBox
+            // 
+            this.passwordTextBox.Location = new System.Drawing.Point(122, 100);
+            this.passwordTextBox.Name = "passwordTextBox";
+            this.passwordTextBox.Size = new System.Drawing.Size(137, 20);
+            this.passwordTextBox.TabIndex = 52;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(23, 103);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(45, 13);
+            this.label4.TabIndex = 51;
+            this.label4.Text = "Пароль";
+            // 
             // FormManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SkyBlue;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.passwordTextBox);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.Number);
             this.Controls.Add(this.NameCombobox);
             this.Controls.Add(this.delete_button);
@@ -218,5 +238,7 @@
         private System.Windows.Forms.TextBox NameCombobox;
         private System.Windows.Forms.TextBox Number;
         public System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TextBox passwordTextBox;
+        private System.Windows.Forms.Label label4;
     }
 }

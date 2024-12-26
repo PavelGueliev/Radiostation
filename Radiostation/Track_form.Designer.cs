@@ -172,6 +172,7 @@
             // 
             // Genre_comboBox
             // 
+            this.Genre_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Genre_comboBox.FormattingEnabled = true;
             this.Genre_comboBox.Location = new System.Drawing.Point(119, 162);
             this.Genre_comboBox.Name = "Genre_comboBox";

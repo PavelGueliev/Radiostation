@@ -160,6 +160,7 @@
             // 
             // playlistComboBox
             // 
+            this.playlistComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.playlistComboBox.FormattingEnabled = true;
             this.playlistComboBox.Location = new System.Drawing.Point(153, 76);
             this.playlistComboBox.Name = "playlistComboBox";
@@ -168,6 +169,7 @@
             // 
             // presenterComboBox
             // 
+            this.presenterComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.presenterComboBox.FormattingEnabled = true;
             this.presenterComboBox.Location = new System.Drawing.Point(153, 36);
             this.presenterComboBox.Name = "presenterComboBox";

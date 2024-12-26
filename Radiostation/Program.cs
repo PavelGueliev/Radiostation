@@ -8,6 +8,7 @@ namespace Radiostation
 {
     internal static class Program
     {
+        public static string CurrentUsername { get; set; }
         /// <summary>
         /// Главная точка входа для приложения.
         /// </summary>

@@ -91,6 +91,7 @@
             // 
             // authorsComboBox
             // 
+            this.authorsComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.authorsComboBox.FormattingEnabled = true;
             this.authorsComboBox.Location = new System.Drawing.Point(136, 397);
             this.authorsComboBox.Name = "authorsComboBox";

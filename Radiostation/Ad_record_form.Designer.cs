@@ -32,10 +32,8 @@
             this.exit_button = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.Second_numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.Minut_numericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.Hours_numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.textBoxTitle = new System.Windows.Forms.TextBox();
             this.delete_button = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -46,7 +44,6 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.Second_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Minut_numericUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Hours_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -66,7 +63,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(341, 123);
+            this.label7.Location = new System.Drawing.Point(247, 123);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(43, 13);
             this.label7.TabIndex = 54;
@@ -75,41 +72,25 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(252, 120);
+            this.label6.Location = new System.Drawing.Point(158, 120);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(38, 13);
             this.label6.TabIndex = 53;
             this.label6.Text = "Минут";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(169, 118);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(39, 13);
-            this.label5.TabIndex = 52;
-            this.label5.Text = "Часов";
-            // 
             // Second_numericUpDown
             // 
-            this.Second_numericUpDown.Location = new System.Drawing.Point(296, 116);
+            this.Second_numericUpDown.Location = new System.Drawing.Point(202, 116);
             this.Second_numericUpDown.Name = "Second_numericUpDown";
             this.Second_numericUpDown.Size = new System.Drawing.Size(39, 20);
             this.Second_numericUpDown.TabIndex = 49;
             // 
             // Minut_numericUpDown
             // 
-            this.Minut_numericUpDown.Location = new System.Drawing.Point(212, 113);
+            this.Minut_numericUpDown.Location = new System.Drawing.Point(118, 113);
             this.Minut_numericUpDown.Name = "Minut_numericUpDown";
             this.Minut_numericUpDown.Size = new System.Drawing.Size(34, 20);
             this.Minut_numericUpDown.TabIndex = 48;
-            // 
-            // Hours_numericUpDown
-            // 
-            this.Hours_numericUpDown.Location = new System.Drawing.Point(118, 113);
-            this.Hours_numericUpDown.Name = "Hours_numericUpDown";
-            this.Hours_numericUpDown.Size = new System.Drawing.Size(45, 20);
-            this.Hours_numericUpDown.TabIndex = 47;
             // 
             // textBoxTitle
             // 
@@ -209,10 +190,8 @@
             this.Controls.Add(this.exit_button);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.Second_numericUpDown);
             this.Controls.Add(this.Minut_numericUpDown);
-            this.Controls.Add(this.Hours_numericUpDown);
             this.Controls.Add(this.textBoxTitle);
             this.Controls.Add(this.delete_button);
             this.Controls.Add(this.label3);
@@ -227,7 +206,6 @@
             this.Text = "Реклама";
             ((System.ComponentModel.ISupportInitialize)(this.Second_numericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Minut_numericUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Hours_numericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -240,10 +218,8 @@
         private System.Windows.Forms.Button exit_button;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown Second_numericUpDown;
         private System.Windows.Forms.NumericUpDown Minut_numericUpDown;
-        private System.Windows.Forms.NumericUpDown Hours_numericUpDown;
         private System.Windows.Forms.TextBox textBoxTitle;
         private System.Windows.Forms.Button delete_button;
         private System.Windows.Forms.Label label3;

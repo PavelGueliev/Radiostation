@@ -335,6 +335,47 @@ namespace Radiostation
                         command.ExecuteNonQuery();
                         MessageBox.Show("Трек добавлен в плейлист.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
+                    catch (SqlException ex)
+                    {
+                        string userMessage;
+
+                        switch (ex.Number)
+                        {
+                            case 547:
+                                // Ошибка нарушения целостности при связи (FK) или ограничения CHECK
+                                // "The INSERT statement conflicted with the FOREIGN KEY constraint" и т.п.
+                                userMessage = "Ошибка нарушения целостности при связи";
+                                break;
+
+                            case 2627:
+                                // Нарушение UNIQUE или PRIMARY KEY
+                                // "Violation of PRIMARY KEY constraint" / "Violation of UNIQUE KEY constraint"
+                                userMessage = "Невозможно сохранить запись. Такую запись уже добавляли.";
+                                break;
+
+                            case 2601:
+                                // Аналогично 2627, нарушение уникального индекса
+                                userMessage = "Дубликат. Запись с такими уникальными полями уже существует.";
+                                break;
+
+
+                            case 50000:
+                                // Пользовательская ошибка, сгенерированная через RAISERROR(...) с number=50000
+                                userMessage = "Ошибка базы данных: " + ex.Message;
+                                break;
+
+                            default:
+                                // Все остальные ошибки. Можно вывести ex.Number и ex.Message полностью.
+                                userMessage = $"Ошибка SQL (код {ex.Number}): {ex.Message}";
+                                break;
+                        }
+
+                        // Выводим конечное сообщение пользователю
+                        MessageBox.Show(userMessage,
+                                        "Ошибка SQL",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                    }
                     catch (Exception ex)
                     {
                         MessageBox.Show($"Ошибка при обновлении базы данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -371,11 +412,46 @@ namespace Radiostation
                         }
                         LoadPlaylists();
                     }
-                    catch (SqlException sqlEx)
+                    catch (SqlException ex)
                     {
-                        // Обработка ошибок SQL
-                        MessageBox.Show($"SQL ошибка при обновлении базы данных: {sqlEx.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        // Логирование sqlEx.Message при необходимости
+                        string userMessage;
+
+                        switch (ex.Number)
+                        {
+                            case 547:
+                                // Ошибка нарушения целостности при связи (FK) или ограничения CHECK
+                                // "The INSERT statement conflicted with the FOREIGN KEY constraint" и т.п.
+                                userMessage = "Ошибка нарушения целостности при связи";
+                                break;
+
+                            case 2627:
+                                // Нарушение UNIQUE или PRIMARY KEY
+                                // "Violation of PRIMARY KEY constraint" / "Violation of UNIQUE KEY constraint"
+                                userMessage = "Невозможно сохранить запись. Такую запись уже добавляли.";
+                                break;
+
+                            case 2601:
+                                // Аналогично 2627, нарушение уникального индекса
+                                userMessage = "Дубликат. Запись с такими уникальными полями уже существует.";
+                                break;
+
+
+                            case 50000:
+                                // Пользовательская ошибка, сгенерированная через RAISERROR(...) с number=50000
+                                userMessage = "Ошибка базы данных: " + ex.Message;
+                                break;
+
+                            default:
+                                // Все остальные ошибки. Можно вывести ex.Number и ex.Message полностью.
+                                userMessage = $"Ошибка SQL (код {ex.Number}): {ex.Message}";
+                                break;
+                        }
+
+                        // Выводим конечное сообщение пользователю
+                        MessageBox.Show(userMessage,
+                                        "Ошибка SQL",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
                     }
                     catch (Exception ex)
                     {
@@ -425,7 +501,7 @@ namespace Radiostation
         private void addPlaylistButton_Click(object sender, EventArgs e)
         {
             string playlistName = playlistTextBox.Text; // Название плейлиста из TextBox
-            TimeSpan duration = TimeSpan.FromMinutes(60); // Пример: продолжительность плейлиста 1 час
+            TimeSpan duration = TimeSpan.FromSeconds(1); // Пример: продолжительность плейлиста 1 час
 
             if (string.IsNullOrWhiteSpace(playlistName))
             {

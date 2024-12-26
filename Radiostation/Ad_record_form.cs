@@ -69,7 +69,6 @@ namespace Radiostation
         private void add_button_Click(object sender, EventArgs e)
         {
             string title = textBoxTitle.Text.Trim();
-            int hours = (int)Hours_numericUpDown.Value;
             int minutes = (int)Minut_numericUpDown.Value;
             int seconds = (int)Second_numericUpDown.Value;
 
@@ -79,10 +78,16 @@ namespace Radiostation
                 return;
             }
 
-            TimeSpan duration = new TimeSpan(hours, minutes, seconds);
+            TimeSpan duration = new TimeSpan(0, minutes, seconds);
             if (duration <= TimeSpan.Zero)
             {
                 MessageBox.Show("Длительность должна быть больше 0.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (duration.TotalMinutes > 5)
+            {
+                MessageBox.Show("Длительность должна быть не больше 6 минут", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
